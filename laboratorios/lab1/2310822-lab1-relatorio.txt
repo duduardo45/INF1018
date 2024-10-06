@@ -1,0 +1,17 @@
+1) abri o terminal Linux.
+2) percebi que estava no root do meu usuário, decidi criar uma pasta para INF1018 dentro do desktop.
+3) dei cd para dentro da pasta que criei para a disciplina.
+4)
+	a) tendo compilado ex1.c, saiu o resultado esperado, quando usei o comando ./ex1 4.0.
+	Ao usar ./ex1, também houve o resultado esperado, de mostrar a mensagem de erro configurada e escrita no código.
+	tentar executar ex1 deu errado pois o programa não está configurado na variável PATH do sistema, então o terminal não entende o nome deste arquivo como um comando apropriado.
+	b)Fiz cada passo de criar o .o de cada objeto e depois liguei estes.
+	O programa ainda funcionou como o esperado.
+	c) O compilador falhou na geração de um executável, diferente do indicado pelas instruções.
+	Tentar executar ./ex3 4.0 falhou, dando o resultado de "Command not found."
+5) Esta função me parece que recebe um ponteiro à uma área de memória e printa a tela o numero associado aquele valor de memória, em loop pela quantidade de bytes indicada por n.
+Sobre o armazenamento destas variáveis pode-se concluir que:
+c1: o char c1 igual a um valor inteiro associa diretaente este valor à memória.
+c2: o char equivalente ao numeral 1 é diferente do código 1 ASCII.
+i: a arquitetura de armazenamento é little Endian.
+v: para qualquer string de tamanho n, são guardados n+1 bytes, devido ao caractere terminante '\0'.

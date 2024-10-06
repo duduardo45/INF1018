@@ -1,0 +1,20 @@
+1) Ao tentar compilar os arquivos como estão surgiu uma warning no console, de 'implicit declaration of 'dump''.
+a) O resultado deste programa indica que 4 bytes são usados para um int, e a arquitetura deste computador é little endian, e que os bytes são organizados de menor significância para maior.
+b) O long usa 8 bytes, com a mesma arquitetura do int.
+c) O short usa 2 bytes, com a mesma arquitetura do int.
+d) O char é armazenado em um único byte, novamente com a mesma arquitetura de representação direta.
+e) Uma string ou vetor de chars é armazenado com n+1 bytes, devido ao caracter de terminação. 
+Uma string 'vazia' é na verdade um ponteiro para uma área onde está armazenado um caractere '\0'.
+O caractere indice 10 é o \n, o alfabeto maiúsculo começa a partir do \x41, e o símbolo $ está no \x24.
+2)
+a) esta função lê uma string caractere a caractere e converte este caractere no inteiro que o representa, levando como base a contiguidade dos dígitos na tabela ASCII. 
+Esta dependência é representada pela operação *s - '0' que pega o valor na tabela ASCII e acha seu offset em relação ao 0.
+a vira um acumulador deste resultado, que está em base 10 pelo fato que está sendo multiplicado por este valor ao adicionar um novo dígito.
+b) O código funcionou como o esperado, tendo o resultado 511, para a conversão de 777 em base 8 para pase 10.
+c) usando as funções isdigit e isalpha, fui capaz de checar se a entrada é válida.
+Caso seja um dígito basta usar a lógica anterior.
+Caso seja uma letra minúscula uso a lógica (*s - 'a' + 10) pois isto é uma lógica parecida, que dá o offset apropriado ao dígito 'a'.
+Os resultados desta função nos exemplos foram:
+26
+41115
+1633295

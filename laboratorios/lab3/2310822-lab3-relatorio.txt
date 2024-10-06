@@ -1,0 +1,34 @@
+1) Para o menor bit operei x & 0x000000FF 
+e para o maior bit alterado com resto mantido operei x | 0xFF000000
+ tendo como resultado 00000021 ff654321
+
+ 2) Para determinar se a quantidade de bits 1 é par ou impar
+ eu utilizo o loop 
+ for (i = 0; i < sizeof(x)*8; i++) {
+    impar = impar ^ (x & 0x1);
+    x = x>>1;
+  }
+  que guarda em uma variavel o valor resultado,
+  que começa em "par" (0) e faz a operação XOR com
+  o último bit de x, desta maneira checando a paridade dele.
+  Feita essa operação eu desloco x em um bit, e repito este
+  processso pela quantidade de bits de x.
+
+3) 
+a) para trocar as metades do byte basta eu guardar uma metade
+empurrar o byte de modo a jogar fora o byte guardado e pôr de volta
+no espaço aberto a metade de byte guardado.
+unsigned char temp;
+    temp = x >> 4;
+    x = (x << 4) | temp;
+    return x;
+
+b) para rotacionar o número a lógica é muito parecida.
+basta que se mude os valores 4 do código anterior por algo 
+adequado. 
+if (n >= 8) n = n%8; // pode-se assumir de acordo com o enunciado mas prefiro garantir.
+    temp = x >> (8-n);
+    x = (x << n) | temp;
+    return x;
+Com este código você guarda os n bits mais significativos,
+abre espaço para eles em x, e adiciona os guardados ao final.

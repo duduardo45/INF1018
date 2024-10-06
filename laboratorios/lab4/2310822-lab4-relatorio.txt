@@ -1,0 +1,101 @@
+1) segue o raciocínio:
+(char assumo que seja signed, 
+portanto 150 é negativo;
+150 em hex é A6,
+portanto será impresso A6)
+(short -3 em hex é FD,
+portanto será impresso FF FD)
+(int -151 em hex é 5A
+portanto será impresso FF FF FF 5A)
+
+minhas contas dizem que será impresso:
+dump de c:
+0x(algumacoisa) - A6
+dump de s:
+0x(algumacoisa) - FF FD
+dump de i:
+0x(algumacoisa) - FF FF FF 5A
+Errei minhas contas. 150 é 96 e não A6. 
+-151 é 69 e não 5A.
+
+2) Fazendo contas, percebi que
+-32765 e 32771 estão a 3 unidades de distância
+de 32768, que é 2^15. 
+a representação em binário de 32768 é
+1000 0000 0000 0000
+portanto a de 32765 é
+0111 1111 1111 1100
+e a de -32765 é
+1000 0000 0000 0010 (por conta do +1 da conversão pra signed)
+a representação de 32771 é
+1000 0000 0000 0011
+
+o output do programa deve ser então:
+l=-32765, k=32771
+dump de l: 
+0x(alguma coisa) - 80 
+0x(alguma coisa) - 02
+dump de k:
+0x(alguma coisa) - 80
+0x(alguma coisa) - 03
+
+o output do código foi muito parecido com
+o que achava mas a adição de +1 para números 
+negativos não aparenta ocorrer como esperava.
+Também esqueci-me da arquitetura little endian
+que ocasionou na inversão do print dos bytes.
+
+3) minha estratégia para a implementação de xbyte
+é de primeiro trazer os 8 bits corretos para frente
+do número e jogar fora o resto (& 0xFF), pra ter certeza 
+que tenho apenas os bits necessários. Então, pego o bit
+mais significativo e replico ele em todos os bits mais
+significativos disponíveis em um int de 4 bytes. Faço isso
+abusando da lógica de bitshift em números com sinal.
+x = x | (((x >> 7) << 31) >> 23);
+é o código que uso para extender o sinal. Funciona pois:
+Primeiro preservo o bit de sinal apenas. x >> 7
+Segundo transfiro ele para a posição de sinal de um tipo int. x << 31
+Terceiro replico o sinal para todos os bits acima do primeiro byte. x >> 23
+Por fim, faço um ou com este resultado, assim conseguindo representar 
+o signed char em uma variável int.
+
+4) O resultado de rodar os programas escritos no enunciado
+é que em ambos os casos é escrito na saída que x = -1 e y = 2,
+mas que no primeiro caso (tipo int) x é sim menor que y; e no
+segundo caso x não é menor que y. Isso pode ser explicado
+assim como foi discutido em sala, no segundo caso os números
+que aparecem na saída não são os que estão sendo representados
+pelo tipo que está sendo usado para guardar as variáveis. O tipo
+unsigned int quando guarda o valor 0xFFFFFFFF representa um número
+positivo muito grande (aproximadamente 4 bilhões) e não -1 como
+está indicado e que de fato, não é menor que 2.
+Quando troco %d por %u, acontece o problema oposto; x aparenta
+ser maior que y mas o primeiro programa indica que x é menor que y.
+Acontece pelo mesmo motivo, mas ao contrário. O tipo int quando
+guarda o valor 0xFFFFFFFF representa -1 e não 4 bilhões. Como
+-1 é menor que 2, está aproriada sim esta resposta.
+
+Para o programa 3 o que acontece é um pouco mais interessante.
+Quando se salva o valor 0xFFFFFFFF em uma variável int, o valor
+que está sendo representado é de fato -1. Porém, quando se quer
+fazer uma comparação entre variáveis de tipos diferentes, há de 
+se converter alguma delas para que os tipos sejam compatíveis,
+e a convenção é que será convertido o menor tipo para o maior tipo.
+Como o tipo unsigned int consegue representar números maiores
+do que o tipo int, o número que é convertido para o outro tipo
+é justamente o 0xFFFFFFFF que como discuti antes, representa um
+número grande. Como após a conversão x é maior que y, o resultado
+está coerente com o que se esperaria.
+
+5) Para poder-se atribuir um valor de um byte a um espaço  de 4
+bytes tem-se primeiro que tornar o valor de 1 byte em um de 4.
+Portanto o signed char 0xFF é expandido para um signed int,
+ao fazer a replicação do bit de sinal se torna o valor 0xFFFFFFFF, 
+pois ambos estes representam o mesmo número -1. Então, este valor 
+é guardado em ui, que éum unsigned int. Como os bytes estavam 
+em 0xFFFFFFFF, eles continuam nesta posição, porém por se tratar
+de uma variável unsigned, ela agora representa outro número, 
+que é um pouco mais que 4 bilhões.
+De fato, foi exatamente o que aconteceu quando escrevi o programa
+que faz o dump destes bytes.
