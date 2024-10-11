@@ -5,16 +5,7 @@ int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida);
 
 #define BOM 0xFEFF
 
-
-int inverte_int(int n) {
-    unsigned char bytes[4];
-    for (int i=0;i<4;i++) {
-        bytes[i] = (n >> (8*i)); // & 0xFF;
-        // printf("%x %x %x\n", bytes[i],(n << (8*i)),n);
-    }
-    n = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
-    return n;
-}
+typedef unsigned int uint;
 
 int convUtf8p32(FILE *arquivo_entrada, FILE *arquivo_saida) {
 
@@ -54,8 +45,25 @@ int convUtf8p32(FILE *arquivo_entrada, FILE *arquivo_saida) {
     return 0;
 }
 
-int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
+int inverte_int(uint n) {
+    unsigned char bytes[4];
+    for (int i=0;i<4;i++) {
+        bytes[i] = (n >> (8*i)); // & 0xFF;
+        // printf("%x %x %x\n", bytes[i],(n << (8*i)),n);
+    }
+    n = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
+    return n;
+}
 
+int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
+    uint char32;
+    
+    fread(&char32, sizeof(uint), 1, arquivo_entrada);
+    int little_endian = char32 == (uint) BOM
+
+    while (fread(&char32, sizeof(uint), 1, arquivo_entrada) == 1) {
+
+    }
     return 0;
 }
 
