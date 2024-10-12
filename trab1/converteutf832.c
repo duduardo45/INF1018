@@ -59,7 +59,7 @@ int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
     uint char32;
     
     fread(&char32, sizeof(uint), 1, arquivo_entrada);
-    int little_endian = char32 == (uint) BOM
+    int little_endian = char32 == (uint) BOM;
 
     while (fread(&char32, sizeof(uint), 1, arquivo_entrada) == 1) {
 
