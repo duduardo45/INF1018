@@ -15,9 +15,19 @@ int convUtf8p32(FILE *arquivo_entrada, FILE *arquivo_saida) {
     int i = 0;
     unsigned char ajuste;
     fwrite(&byte, sizeof( unsigned int), 1, arquivo_saida);
+    if (ferror(arquivo_saida)) {
+        fprintf(stderr, "Erro de gravacao.\n");
+        return -1;
+    }
 
     while ((byte = getc(arquivo_entrada)) != EOF) {
-        printf("%x\n", byte);
+
+        if (ferror(arquivo_entrada)) {
+            fprintf(stderr, "Erro de leitura.\n");
+            return -1;
+        }
+
+
         if (0x80 & byte) {
             i = -1; // isso pois o primeiro byte é diferente
             ajuste = 0xFF;
@@ -32,15 +42,16 @@ int convUtf8p32(FILE *arquivo_entrada, FILE *arquivo_saida) {
                 utf32_char <<=6;
                 utf32_char |= byte & 0x3F;
             }
-            printf("caracter %x --> ",utf32_char);
-            // utf32_char = inverte_int(utf32_char); // necessário pois meu computador é little endian
-            printf("caracter %x\n",utf32_char);
         }
         else {
             utf32_char = byte;
         }
         // escreve de acordo com a arquitetura do computador usado, neste caso little endian
         fwrite(&utf32_char, sizeof(unsigned int), 1, arquivo_saida); 
+        if (ferror(arquivo_saida)) {
+            fprintf(stderr, "Erro de gravacao.\n");
+            return -1;
+        }
     }
     return 0;
 }
@@ -62,15 +73,24 @@ int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
     unsigned char out[4];
     
     fread(&char32, sizeof(uint), 1, arquivo_entrada);
+    if (ferror(arquivo_entrada)) {
+            fprintf(stderr, "Erro de leitura.\n");
+            return -1;
+        }
+
     int little_endian = char32 == (uint) BOM;
     int big_endian = char32 == inverte_int((uint) BOM);
 
     if (!little_endian && !big_endian) {
-        printf("formatacao estranha.\n");
+        fprintf(stderr, "BOM invalido.\n");
         return -1;
     }
 
     while (fread(&char32, sizeof(uint), 1, arquivo_entrada) == 1) {
+        if (ferror(arquivo_entrada)) {
+            fprintf(stderr, "Erro de leitura.\n");
+            return -1;
+        }
 
         if (big_endian) char32 = inverte_int(char32);
         
@@ -101,6 +121,10 @@ int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
         }
         else {
             printf("caractere nao representavel por utf-8\n");
+            return -1;
+        }
+        if (ferror(arquivo_saida)) {
+            fprintf(stderr, "Erro de gravacao.\n");
             return -1;
         }
     }
