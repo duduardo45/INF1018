@@ -56,22 +56,66 @@ int inverte_int(uint n) {
 }
 
 int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
+
     uint char32;
+    int i;
+    unsigned char out[4];
     
     fread(&char32, sizeof(uint), 1, arquivo_entrada);
     int little_endian = char32 == (uint) BOM;
+    int big_endian = char32 == inverte_int((uint) BOM);
+
+    if (!little_endian && !big_endian) {
+        printf("formatacao estranha.\n");
+        return -1;
+    }
 
     while (fread(&char32, sizeof(uint), 1, arquivo_entrada) == 1) {
 
+        if (big_endian) char32 = inverte_int(char32);
+        
+        for (i = 31; i;i--) if ((char32 >> i) & 1) break;
+        i++;
+
+        if (i < 8) {
+            out[0] = char32;
+            fwrite(out,sizeof(unsigned char), 1, arquivo_saida);
+        }
+        else if (i < 12) {
+            out[0] = 0b11000000 | ((char32 >> 6) & 0b00011111);
+            out[1] = 0b10000000 | (char32 & 0b00111111);
+            fwrite(out,sizeof(unsigned char), 2, arquivo_saida);
+        }
+        else if (i < 17) {
+            out[0] = 0b11100000 | ((char32 >> 12) & 0b00001111);
+            out[1] = 0b10000000 | ((char32 >> 6) & 0b00111111);
+            out[2] = 0b10000000 | (char32 & 0b00111111);
+            fwrite(out,sizeof(unsigned char), 3, arquivo_saida);
+        }
+        else if (i < 22) {
+            out[0] = 0b11110000 | ((char32 >> 18) & 0b00000111);
+            out[1] = 0b10000000 | ((char32 >> 12) & 0b00111111);
+            out[2] = 0b10000000 | ((char32 >> 6) & 0b00111111);
+            out[3] = 0b10000000 | (char32 & 0b00111111);
+            fwrite(out,sizeof(unsigned char), 4, arquivo_saida);
+        }
+        else {
+            printf("caractere nao representavel por utf-8\n");
+            return -1;
+        }
     }
     return 0;
 }
 
-int main(void) {
+// int main(void) {
 
-    FILE* utf8 = fopen("utf8.txt", "rb");
-    FILE* Sutf32 = fopen("conv832.txt", "wb");
-    convUtf8p32(utf8,Sutf32);
+//     FILE* utf8 = fopen("utf8.txt", "rb");
+//     FILE* Sutf32 = fopen("conv832.txt", "wb");
+//     convUtf8p32(utf8,Sutf32);
 
-    return 0;
-}
+//     FILE* utf32 = fopen("utf32.txt", "rb");
+//     FILE* Sutf8 = fopen("conv328.txt", "wb");
+//     convUtf32p8(utf32,Sutf8);
+
+//     return 0;
+// }
