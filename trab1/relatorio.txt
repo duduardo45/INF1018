@@ -1,0 +1,13 @@
+O trabalho 1 de INF1018 - Software Básico foi feito sozinho por mim,
+Eduardo Eugênio de Souza. O código em anexo funciona para todos os
+casos abrangidos pelo escopo do trabalho, lembrando que este não
+incluia casos onde a codificação do texto sendo traduzido estivesse
+incorreta. Fiz testes relativos a codificação little e big endian,
+funcionando corretamente para ambos. Testei também o caso do BOM do
+arquivo estar em um formato inválido, e o programa apropriadamente
+apontou o erro e terminou sua execução. O programa também testa
+após cada operação de entrada e saída de arquivos para ver se houve
+algum erro, e caso haja, terminar a execução assim indicando.Tentei 
+ao máximo manter o código compacto, de maneira a simplificar sua 
+leitura. Usei de comentários para explicar as partes menos intuitivas 
+do código. Agradeço o tempo e a correção.
