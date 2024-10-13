@@ -45,7 +45,7 @@ int convUtf8p32(FILE *arquivo_entrada, FILE *arquivo_saida) {
     return 0;
 }
 
-int inverte_int(uint n) {
+uint inverte_int(uint n) {
     unsigned char bytes[4];
     for (int i=0;i<4;i++) {
         bytes[i] = (n >> (8*i)); // & 0xFF;
@@ -107,6 +107,15 @@ int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
     return 0;
 }
 
+int cria_big_endian(FILE* entrada, FILE* saida) {
+    uint char32;
+    while (fread(&char32, sizeof(uint), 1, entrada) == 1) {
+        char32 = inverte_int(char32);
+        fwrite(&char32,4,1,saida);
+    }
+    return 0;
+}
+
 // int main(void) {
 
 //     FILE* utf8 = fopen("utf8.txt", "rb");
@@ -116,6 +125,14 @@ int convUtf32p8(FILE *arquivo_entrada, FILE *arquivo_saida) {
 //     FILE* utf32 = fopen("utf32.txt", "rb");
 //     FILE* Sutf8 = fopen("conv328.txt", "wb");
 //     convUtf32p8(utf32,Sutf8);
+
+//     FILE* utf32 = fopen("utf32.txt", "rb");
+//     FILE* Sbig = fopen("utf32-big.txt", "wb");
+//     cria_big_endian(utf32,Sbig);
+
+//     FILE* utf32big = fopen("utf32-big.txt", "rb");
+//     FILE* Sutf8big = fopen("utf8-big.txt", "wb");
+//     convUtf32p8(utf32big,Sutf8big);
 
 //     return 0;
 // }
