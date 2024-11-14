@@ -1,2 +1,2 @@
 # INF1018 - Software Básico
-Neste repositório estão guardados os códigos pertinentes aos laboratórios e trabalhos da matéria INF1018 da PUC-Rio.
+Neste repositório estão guardados os códigos pertinentes aos laboratórios e trabalhos da matéria INF1018 da PUC-Rio no semestre 2024.2.
