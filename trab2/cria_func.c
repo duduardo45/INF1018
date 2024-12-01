@@ -66,14 +66,14 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0xbf; // mov para o edi
                   } else{
-                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc7; // mov para o rdi
+                    *p++ = 0x48; *p++ = 0xbf; // mov para o rdi
                   }
                   break;
                 case 1:
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0xbe; // mov para o esi
                   } else{
-                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc6; // mov para o rsi
+                    *p++ = 0x48; *p++ = 0xbe; // mov para o rsi
                   }
                   break;
 
@@ -81,7 +81,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0xba; // mov para o edx
                   } else{
-                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc2; // mov para o rdx
+                    *p++ = 0x48; *p++ = 0xba; // mov para o rdx
                   }
                   break;
               }
@@ -89,7 +89,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
               if (params[i].tipo_val == INT_PAR){
                 *((int *)p) = params[i].valor.v_int;  p += 4; // armazena o valor inteiro no registrador correspondente
               } else {
-                *((void **)p) = params[i].valor.v_ptr;  p += 4; // armazena o endereço do ponteiro no registrador correspondente
+                *((void **)p) = params[i].valor.v_ptr; p += 8; // armazena o endereço do ponteiro no registrador correspondente
               }
 
               break;
