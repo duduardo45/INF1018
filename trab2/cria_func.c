@@ -10,16 +10,20 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
     *p++ = 0x55;                  // push   %rbp
     *p++ = 0x48; *p++ = 0x89; *p++ = 0xe5; // mov    %rsp, %rbp
 
-    int numFixos = 0;
+    int numFixos = 0; // contador de parametros que não são passados na chamada
 
-    // Configurar parâmetros
+    // Configurar parâmetros do tipo PARAM primeiro
     for (int i = 0; i < n; i++) {
         switch (params[i].orig_val) {
             case PARAM:
               // Usar registradores na ordem rdi, rsi, rdx
               switch(numFixos){
-                case 1:
-                  if(i == 1){
+                // nao precisa fazer nada enquanto os argumentos sejam do tipo PARAM
+
+                case 1: 
+                  if(i == 1){ 
+                    // se for o segundo precisa ver se o terceiro está livre e salvar
+                    // o valor do segundo registrador antes de mover o argumento
                     if(params[2].tipo_val == PTR_PAR){
                       if (params[2].tipo_val == INT_PAR){
                         *p++ = 0x89; *p++ = 0xf2; // mov esi para o edx
@@ -35,6 +39,8 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   }
                   break;
                 case 2:
+                // caso onde os dois primeiros são fixos, basta mover o primeiro
+                // recebido para o terceiro registrador
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0x89; *p++ = 0xfa; // mov edi para o edx
                   } else{
@@ -61,7 +67,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
               break;
             case FIX:
               // Mover valor constante para o registrador correspondente
-              switch (i){
+              switch (i){ // primeiro adiciona o binário da instrução
                 case 0:
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0xbf; // mov para o edi
@@ -86,6 +92,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   break;
               }
 
+              // para depois adicionar o valor constante na instrução
               if (params[i].tipo_val == INT_PAR){
                 *((int *)p) = params[i].valor.v_int;  p += 4; // armazena o valor inteiro no registrador correspondente
               } else {
@@ -93,11 +100,17 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
               }
 
               break;
-            case IND:
-              // Carregar valor indireto de memória
+
+            case IND: // Carregar valor indireto de memória
+              // primeiro carrega a referência recebida pelo cria_func
+              // em uma constante no codigo[], pra que essa constante
+              // sirva de referencia dinâmica em tempo de execução
+
+              // prólogo onde guarda a constante
               *p++ = 0x49; *p++ = 0xba; // mov $ponteiro, %r10
-              *((void **)p) = params[i].valor.v_ptr; p += 8; // $ponteiro
-              switch (i){
+              *((void **)p) = params[i].valor.v_ptr; p += 8; // adiciona os dados do $ponteiro
+
+              switch (i){ // desreferencia a constante para achar o valor da variavel indicada
                 case 0:
                   if (params[i].tipo_val == INT_PAR){
                     // caso do valor ser inteiro
@@ -136,11 +149,11 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
     }
 
     // Chamada à função original
-    *p++ = 0x48; *p++ = 0xb8;             // mov $endereço, %rax
-    *((void **)p) = f; p += 8;
-    *p++ = 0xff; *p++ = 0xd0;             // call *%rax
+    *p++ = 0x48; *p++ = 0xb8; // mov $endereço, %rax
+    *((void **)p) = f; p += 8; // adiciona os dados de $endereco
+    *p++ = 0xff; *p++ = 0xd0; // call *%rax
 
     // Epílogo
-    *p++ = 0xc9;                  // leave
-    *p++ = 0xc3;                  // ret
+    *p++ = 0xc9; // leave
+    *p++ = 0xc3; // ret
 }
