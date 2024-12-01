@@ -22,30 +22,22 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   if(i == 1){
                     if(params[2].tipo_val == PTR_PAR){
                       if (params[2].tipo_val == INT_PAR){
-                         printf("b");
                         *p++ = 0x89; *p++ = 0xf2; // mov esi para o edx
                       } else{
-                        printf("B");
-
                         *p++ = 0x48; *p++ = 0x89; *p++ = 0xf2; // mov rsi para o rdx
                       }
                     }
                     if (params[i].tipo_val == INT_PAR){
-                       printf("a");
                       *p++ = 0x89; *p++ = 0xfe; // mov edi para o esi
                     } else{
-                      printf("A");
                       *p++ = 0x48; *p++ = 0x89; *p++ = 0xfe; // mov rdi para o rsi
                     }
                   }
                   break;
                 case 2:
                   if (params[i].tipo_val == INT_PAR){
-                     printf("c");
                     *p++ = 0x89; *p++ = 0xfa; // mov edi para o edx
                   } else{
-                    printf("C");
-
                     *p++ = 0x48; *p++ = 0x89; *p++ = 0xfa; // mov rdi para o rdx
                   }
                   break;
