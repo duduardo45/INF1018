@@ -11,7 +11,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
     *p++ = 0x48; *p++ = 0x89; *p++ = 0xe5; // mov    %rsp, %rbp
 
     int numFixos = 0;
-  
+
     // Configurar parâmetros
     for (int i = 0; i < n; i++) {
         switch (params[i].orig_val) {
@@ -20,24 +20,28 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
               switch(numFixos){
                 case 1:
                   if(i == 1){
+                    if(params[2].tipo_val == PTR_PAR){
+                      if (params[2].tipo_val == INT_PAR){
+                         printf("b");
+                        *p++ = 0x89; *p++ = 0xf2; // mov esi para o edx
+                      } else{
+                        printf("B");
+
+                        *p++ = 0x48; *p++ = 0x89; *p++ = 0xf2; // mov rsi para o rdx
+                      }
+                    }
                     if (params[i].tipo_val == INT_PAR){
+                       printf("a");
                       *p++ = 0x89; *p++ = 0xfe; // mov edi para o esi
                     } else{
                       printf("A");
                       *p++ = 0x48; *p++ = 0x89; *p++ = 0xfe; // mov rdi para o rsi
                     }
-                  } else if (i == 2){
-                    if (params[i].tipo_val == INT_PAR){
-                      *p++ = 0x89; *p++ = 0xf2; // mov esi para o edx
-                    } else{
-                      printf("B");
-
-                      *p++ = 0x48; *p++ = 0x89; *p++ = 0xf2; // mov rsi para o rdx
-                    }
                   }
                   break;
                 case 2:
                   if (params[i].tipo_val == INT_PAR){
+                     printf("c");
                     *p++ = 0x89; *p++ = 0xfa; // mov edi para o edx
                   } else{
                     printf("C");
@@ -70,7 +74,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0xbf; // mov para o edi
                   } else{
-                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc7; // moc para o rdi
+                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc7; // mov para o rdi
                   }
                   break;
                 case 1:
@@ -116,7 +120,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   if (params[i].tipo_val == INT_PAR){
                     // caso do valor ser inteiro
                     *p++ = 0x41; *p++ = 0x8b; *p++ = 0x32; // mov (%r10), %esi
-                    
+
                   } else{
                     // caso do valor ser ponteiro
                     *p++ = 0x49; *p++ = 0x8b; *p++ = 0x32; // mov (%r10), %rsi
@@ -127,7 +131,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                   if (params[i].tipo_val == INT_PAR){
                     // caso do valor ser inteiro
                     *p++ = 0x41; *p++ = 0x8b; *p++ = 0x12; // mov (%r10), %edx
-                    
+
                   } else{
                     // caso do valor ser ponteiro
                     *p++ = 0x49; *p++ = 0x8b; *p++ = 0x12; // mov (%r10), %rdx
