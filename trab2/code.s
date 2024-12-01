@@ -9,7 +9,7 @@ subq $16, %rsp
 movq %rdi, -8(%rbp)
 
 movq $0x1234578, %r10
-movl (%r10), %edi
+movl (%r10), %edx
 call *%rdi
 
 movq -8(%rbp), %rdi

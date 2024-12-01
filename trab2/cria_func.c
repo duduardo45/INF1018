@@ -98,7 +98,43 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
 
               break;
             case IND:
-                // Carregar valor indireto de memória
+              // Carregar valor indireto de memória
+              *p++ = 0x49; *p++ = 0xba; // mov $ponteiro, %r10
+              *((void **)p) = params[i].valor.v_ptr; p += 8; // $ponteiro
+              switch (i){
+                case 0:
+                  if (params[i].tipo_val == INT_PAR){
+                    // caso do valor ser inteiro
+                    *p++ = 0x41; *p++ = 0x8b; *p++ = 0x3a; // mov (%r10), %edi
+                  } else{
+                    // caso do valor ser ponteiro
+                    *p++ = 0x49; *p++ = 0x8b; *p++ = 0x3a; // mov (%r10), %rdi
+                  }
+                  break;
+
+                case 1:
+                  if (params[i].tipo_val == INT_PAR){
+                    // caso do valor ser inteiro
+                    *p++ = 0x41; *p++ = 0x8b; *p++ = 0x32; // mov (%r10), %esi
+                    
+                  } else{
+                    // caso do valor ser ponteiro
+                    *p++ = 0x49; *p++ = 0x8b; *p++ = 0x32; // mov (%r10), %rsi
+                  }
+                  break;
+
+                case 2:
+                  if (params[i].tipo_val == INT_PAR){
+                    // caso do valor ser inteiro
+                    *p++ = 0x41; *p++ = 0x8b; *p++ = 0x12; // mov (%r10), %edx
+                    
+                  } else{
+                    // caso do valor ser ponteiro
+                    *p++ = 0x49; *p++ = 0x8b; *p++ = 0x12; // mov (%r10), %rdx
+                  }
+                  break;
+
+              }
               break;
         }
     }
