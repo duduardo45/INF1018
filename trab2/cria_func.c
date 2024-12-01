@@ -53,7 +53,31 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                 // Usar registradores na ordem rdi, rsi, rdx
                 break;
             case FIX:
-                // Mover valor constante para o registrador correspondente
+              // Mover valor constante para o registrador correspondente
+              
+              switch (i){
+                case 0:
+                  if (params[i].tipo_val == INT_PAR){
+                    *p++ = 0xbf; // mov para o edi
+                  } else{
+                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc7;
+                  }
+                  break;
+                case 1:
+                  *p++ = 0xbe; // mov para o esi
+                  break;
+
+                case 2:
+                  if (params[i].tipo_val == INT_PAR){
+                    *p++ = 0xba; // mov para o edx
+                  } else{
+                    *p++ = 0x48; *p++ = 0xc7; *p++ = 0xc2; // mov para o rdx
+                  }
+                  break;
+
+              }
+              *((int *)p) = params[i].valor.v_int;  p += 4;
+              
                 break;
             case IND:
                 // Carregar valor indireto de memória
