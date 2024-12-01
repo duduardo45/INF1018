@@ -9,17 +9,17 @@ de ponteiros esperta, onde primeiro fizemos o cast do tipo e depois desreferenci
 os bytes como se aquela região fosse reservada para o tipo desejado, resultando em: *((int*)p) = valor.v_int;
 Desta maneira fomos capaz de manipular o assembly dinamicamente com os valores das variáveis em C.
 
-Dito isto, os testes que fizemos incluiram os 3 dados no enunciado, para o qual funcionou perfeitamente;
+Dito isto, os testes que fizemos incluíram os 3 dados no enunciado, para o qual funcionou perfeitamente;
 fizemos inicialmente um teste com uma função que retorna sempre uma constante e não recebe nenhum parâmetro,
 que foi instrumental para configurarmos a chamada a função em memória apropriadamente;
-O segundo teste nesta linha foi de criar uma função que recebe um parametro e devolve ele sem fazer nada,
-que serviu para ver se os parametros não estavam se bagunçando de alguma maneira, e neste teste fizemos 
+O segundo teste nesta linha foi de criar uma função que recebe um parâmetro e devolve ele sem fazer nada,
+que serviu para ver se os parâmetro não estavam se bagunçando de alguma maneira, e neste teste fizemos 
 questão de chamar outras funções entre a criação do codigo[] e a chamada deste para ter certeza que não 
-foi coincidencia que os parametros ficaram no lugar certo;
-O próximo teste foi já implementando os parametros fixos, em que testamos fixar 3 parametros de uma função
+foi coincidência que os parâmetros ficaram no lugar certo;
+O próximo teste foi já implementando os parâmetros fixos, em que testamos fixar 3 parâmetros de uma função
 criada, sem deixar nenhum livre para checar se a injeção de valores constantes estava funcionando;
-Em seguida criamos um que afixava apenas o 1o parametro de uma função com 3 parâmetros, onde percebemos
-que os parametros do tipo PARAM precisavam ser movidos com cuidado, para não se sobrescreverem, e assim 
+Em seguida criamos um que afixava apenas o 1o parâmetro de uma função com 3 parâmetros, onde percebemos
+que os parâmetros do tipo PARAM precisavam ser movidos com cuidado, para não se sobrescreverem, e assim 
 fizemos, funcionando perfeitamente;
 Então decidimos testar os testes anteriores agora com as variáveis sendo do tipo PTR_PAR ao invés de INT_PAR,
 o que nos ajudou a consertar mais um detalhe, de usar a instrução certa no movq, que usa outro binário
@@ -30,8 +30,8 @@ Criamos também um teste similar para o tipo IND - PTR_PAR onde a função chama
 vetor de strings em sequencia, trocando qual estava na variavel indicada, usando a cria_func na printf
 e esta funcionou também.
 Por fim o último teste feito foi um onde criamos duas funções diferentes com o cria_func, uma que vem
-do printf e outra de uma função local; a primeira só passa o primeiro parametro por 
-referencia (IND - PTR_PAR), e a segunda faz o mesmo pro primeiro parametro e deixa o segundo sendo do tipo
+do printf e outra de uma função local; a primeira só passa o primeiro parâmetro por 
+referencia (IND - PTR_PAR), e a segunda faz o mesmo pro primeiro parâmetro e deixa o segundo sendo do tipo
 PARAM. Funcionou conforme o esperado novamente.
 
 Gostaria de ressaltar que fizemos alguns outros testes menores durante a elaboração do programa mas que 

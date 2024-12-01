@@ -12,7 +12,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
 
     int numFixos = 0; // contador de parametros que não são passados na chamada
 
-    // Configurar parâmetros do tipo PARAM primeiro
+    // Configurar parâmetros do tipo PARAM primeiro para não perder os valores dos parâmetros de entrada
     for (int i = 0; i < n; i++) {
         switch (params[i].orig_val) {
             case PARAM:
@@ -50,11 +50,11 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
               }
               break;
             case FIX:
-              // somar numero de fixos para ajustar proximos PARAM
+              // somar numero de parametros fixos que ja passaram para ajustar proximos PARAM
               numFixos++;
               break;
             case IND:
-              // somar numero de fixos para ajustar proximos PARAM
+              // somar numero de parametros fixos que ja passaram para ajustar proximos PARAM
               numFixos++;
               break;
         }
@@ -67,7 +67,9 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
               break;
             case FIX:
               // Mover valor constante para o registrador correspondente
-              switch (i){ // primeiro adiciona o binário da instrução
+              switch (i){ //de acordo com a posição do parâmetro, decidir em que registrador colocar o valor fixo
+
+                 // primeiro adiciona o binário da instrução
                 case 0:
                   if (params[i].tipo_val == INT_PAR){
                     *p++ = 0xbf; // mov para o edi
