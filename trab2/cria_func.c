@@ -10,6 +10,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
     *p++ = 0x55;                  // push   %rbp
     *p++ = 0x48; *p++ = 0x89; *p++ = 0xe5; // mov    %rsp, %rbp
 
+    int num_fixos = 0; // conta a quantidade de parametros que foram fixados
     // Configurar parâmetros
     for (int i = 0; i < n; i++) {
         switch (params[i].orig_val) {
@@ -18,7 +19,7 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                 break;
             case FIX:
               // Mover valor constante para o registrador correspondente
-              
+              num_fixos++;
               switch (i){
                 case 0:
                   if (params[i].tipo_val == INT_PAR){
@@ -45,6 +46,8 @@ void cria_func(void *f, DescParam params[], int n, unsigned char codigo[]) {
                 break;
             case IND:
                 // Carregar valor indireto de memória
+                num_fixos++;
+
                 break;
         }
     }
